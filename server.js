@@ -20,7 +20,7 @@ app.use(express.json()); // Habilito recepción de JSON en servidor
 
 // Rutas
 //API
-// app.use('/api/products',productsApiRoutes);
+app.use('/api/products',productsRoutes);
 app.use('/api/providers',providersRoutes);
 
 //WEB

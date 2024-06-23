@@ -55,22 +55,37 @@ const updateProduct = async (filter, update) => {
     }
 };
 
+// Borrar product
+const deleteProduct = async (filter) => {
+    try {
+        const removedProduct = await Product
+            .deleteOne({ 'title': filter });
+        console.log(removedProduct);
+        return removedProduct;
+    } catch (error) {
+        console.log('Error deleting product:', error);
+    }
+};
+
 module.exports = {
     listProducts,
     createProduct,
-    updateProduct
+    updateProduct,
+    deleteProduct
 };
 
-// createProduct('pera', 3, 'manzana rica', 'imagenmanzana.jpg', 'Zara');
+// createProduct('sandía', 3, 'manzana rica', 'imagenmanzana.jpg', 'Zara');
 
 // listProducts();
 
-updateProduct({title: "manzana"} ,{
-        title: "manzana",
-        price: 12,
-        description: "reineta",
-        image: "manzana.jpg",
-        isActive: false
-    });
+// updateProduct({title: "manzana"} ,{
+//         title: "manzana",
+//         price: 12,
+//         description: "reineta",
+//         image: "manzana.jpg",
+//         isActive: false
+//     });
+
+// deleteProduct('pera');
 
 

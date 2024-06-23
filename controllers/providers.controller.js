@@ -13,26 +13,21 @@ const getProviders = async (req, res) => {
 };
 
 const updateProviderController = async (req, res) => {
-    const { company_name, CIF, address, url_web } = req.body;
-    if (company_name && CIF && address && url_web) {
+    filter = req.query;
+    update = req.body;
         try {
-            const filter = { company_name: req.query.company_name };
-            const update = { company_name, CIF, address, url_web };
-            const response = await providerService.updateProvider(filter, update);
-            res.status(200).json(response);
+            const modifiedProvider = await providerService.updateProvider(filter, update);
+            res.status(200).json(modifiedProvider);
         } catch (error) {
             res.status(500).json({ error: error.message });
         }
-    } else {
-        res.status(400).json({ error: "Faltan campos de provider" });
-    }
 };
 
 const createProviderController = async (req, res) => {
-    const { company_name, CIF, address, url_web } = req.body;
-    if (company_name && CIF && address && url_web) {
+    const { company_name, CIF, address, url_web, isActive } = req.body;
+    if (company_name && CIF && address && url_web && isActive) {
         try {
-            const response = await providerService.createProvider(company_name, CIF, address, url_web);
+            const response = await providerService.createProvider(company_name, CIF, address, url_web, isActive);
             res.status(201).json({
                 "items_created": response,
                 data: req.body
@@ -46,7 +41,7 @@ const createProviderController = async (req, res) => {
 };
 
 // deleteProvider
-// DELETE http://localhost:3000/api/authors?company_name=name
+// DELETE http://localhost:3000/api/providers?company_name=name
 const deleteProviderController = async (req, res) => {
     let providers;
     try {

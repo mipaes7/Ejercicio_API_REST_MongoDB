@@ -4,7 +4,7 @@ require('../config/db_mongo') // Conexión a BBDD MongoDB
 const objectSchema = {
     title: { 
         type: String, 
-        required: true,
+        required: true
     },
     price: { 
         type: Number, 

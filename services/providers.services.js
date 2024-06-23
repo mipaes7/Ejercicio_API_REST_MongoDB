@@ -64,9 +64,7 @@ const toggleProvider = async (company_name) => {
     try {
         const provider = await Provider
             .findOne({ "company_name": company_name });
-        if (!provider) {
-            throw new Error('Provider not found');
-        }
+
         provider.isActive = !provider.isActive;
         await provider.save();
 
@@ -101,11 +99,14 @@ module.exports = {
 // listProviders();
 
 //PUT
-// updateProvider({company_name: "Alcampo"} ,{
+// updateProvider({company_name: "Dia"} ,{
 //     company_name: "Alcampo",
 //     CIF: "A40236882",
 //     address: "Calle de Fulgencio 117",
-//     url_web: "https://www.alcampo.com"
+//     url_web: "https://www.alcampo.com",
+//     isActive:  false
 // });
+
+// toggleProvider('Dia');
 
 // deleteProvider('Primaprix');
