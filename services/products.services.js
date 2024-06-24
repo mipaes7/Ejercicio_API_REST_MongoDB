@@ -5,8 +5,8 @@ const Provider = require('../models/provider.model');
 const listProducts = async () => {
     try {
         const products = await Product
-            .find()
-            .populate('provider', 'company_name CIF addres url_web -_id')
+            .find({ isActive: true })
+            .populate('provider', 'company_name CIF address url_web -_id')
             .select('provider title price description -_id')
         console.log(products);
         return products;
@@ -22,20 +22,22 @@ async function createProduct(title, price, description, image, company_name) {
         const provider_id = provider._id.toString();
         const isProviderActive = provider.isActive;
 
-        const product = new Product({
-            title,
-            price,
-            description,
-            image,
-            provider: provider_id,
-            isActive: isProviderActive
-        });
-
+        if (provider) {
+            const product = new Product({
+                title,
+                price,
+                description,
+                image,
+                provider: provider_id,
+                isActive: isProviderActive
+            });
+            const result = await product.save();
+            console.log(result);
+            return result;
+        } else {
+            console.log('No existe esa compañía');
+        }
         // product.isActive = isProviderActive;
-
-        const result = await product.save();
-        console.log(result);
-        return result;
     } catch (error) {
         console.log('Error creating product:', error);
     }
@@ -74,16 +76,16 @@ module.exports = {
     deleteProduct
 };
 
-// createProduct('sandía', 3, 'manzana rica', 'imagenmanzana.jpg', 'Zara');
+// createProduct('dg', 30, 'perfume', 'imagencarne.jpg', 'Druni');
 
 // listProducts();
 
 // updateProduct({title: "manzana"} ,{
-//         title: "manzana",
-//         price: 12,
-//         description: "reineta",
-//         image: "manzana.jpg",
-//         isActive: false
+//         "title": "manzana",
+//         "price": 12,
+//         "description": "reineta",
+//         "image": "manzana.jpg",
+//         "isActive": false
 //     });
 
 // deleteProduct('pera');

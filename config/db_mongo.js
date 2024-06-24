@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 require('dotenv').config();
 
 
-mongoose.connect(process.env.MONGOURI);
+mongoose.connect(process.env.MONGOURIATLAS);
 
 const db = mongoose.connection;
 

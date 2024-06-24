@@ -34,6 +34,6 @@ app.listen(port, () => {
       cowsay.say({
           text: `Nos vamos a por tortilla. Funcionando en: http://localhost:${port}`,
           e: "oO",
-          T: "U "
+          T: "JOJO"
       }))
 })

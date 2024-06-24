@@ -5,7 +5,7 @@ const Product = require('../models/products.model');
 const listProviders = async () => {
     try {
         const providers = await Provider
-            .find()
+            .find({ isActive: true })
         console.log(providers);
         return providers;
     } catch (error) {
@@ -23,7 +23,7 @@ async function createProvider(company_name, CIF, address, url_web, isActive) {
             url_web,
             isActive
         });
-    
+
         const result = await provider.save();
         console.log(result);
         return result;
@@ -40,6 +40,8 @@ const updateProvider = async (filter, update) => {
             .findOneAndUpdate(filter, update, {
                 new: true
             });
+        await Product
+            .updateMany({ provider: modifiedProvider._id }, { isActive: modifiedProvider.isActive });
         console.log(modifiedProvider);
         return modifiedProvider;
     } catch (error) {
@@ -50,9 +52,21 @@ const updateProvider = async (filter, update) => {
 // Borrar provider
 const deleteProvider = async (filter) => {
     try {
+        const foundProvider = await Provider
+            .findOne({'company_name': filter});
+            
+            if (!foundProvider) {
+                throw new Error('Provider not found');
+            }
+
         const removedProvider = await Provider
-            .deleteOne({ 'company_name': filter });
-        console.log(removedProvider);
+            .deleteOne({'company_name': filter});
+
+        await Product
+            .deleteMany({ provider: foundProvider._id });
+
+        console.log('Deleted provider and associated products:', removedProvider, Product);
+
         return removedProvider;
     } catch (error) {
         console.log('Error deleting provider:', error);
@@ -60,29 +74,29 @@ const deleteProvider = async (filter) => {
 };
 
 // Toggle provider en lugar de borrar
-const toggleProvider = async (company_name) => {
-    try {
-        const provider = await Provider
-            .findOne({ "company_name": company_name });
+// const toggleProvider = async (company_name) => {
+//     try {
+//         const provider = await Provider
+//             .findOne({ "company_name": company_name });
 
-        provider.isActive = !provider.isActive;
-        await provider.save();
+//         provider.isActive = !provider.isActive;
+//         await provider.save();
 
-        await Product
-            .updateMany({ provider: provider._id }, { isActive: provider.isActive });
+//         await Product
+//             .updateMany({ provider: provider._id }, { isActive: provider.isActive });
 
-        return provider;
-    } catch (error) {
-        console.log("Unable to toggle:", error);
-    }
-};
+//         return provider;
+//     } catch (error) {
+//         console.log("Unable to toggle:", error);
+//     }
+// };
 
 module.exports = {
     listProviders,
     updateProvider,
     createProvider,
     deleteProvider,
-    toggleProvider
+    // toggleProvider
 };
 
 // createProvider('Zara', 'Z40236882', 'Calle de Prim 49', 'https://www.zara.com', 'true');
@@ -99,7 +113,7 @@ module.exports = {
 // listProviders();
 
 //PUT
-// updateProvider({company_name: "Dia"} ,{
+// updateProvider({company_name: "Froiz"} ,{
 //     company_name: "Alcampo",
 //     CIF: "A40236882",
 //     address: "Calle de Fulgencio 117",
@@ -109,4 +123,4 @@ module.exports = {
 
 // toggleProvider('Dia');
 
-// deleteProvider('Primaprix');
+// deleteProvider('Druni');

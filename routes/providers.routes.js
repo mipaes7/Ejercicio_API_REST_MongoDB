@@ -1,13 +1,15 @@
 const express = require('express');
 const router = express.Router();
 const providerController = require('../controllers/providers.controller');
+const { validateCreateProvider, validateUpdateProvider, validateDeleteProvider } = require("../validators/providers.validator");
+
 
 
 router.get('/', providerController.getProviders);
-router.post('/', providerController.createProviderController);
-router.put('/', providerController.updateProviderController);
-router.delete('/', providerController.deleteProviderController);
-router.delete('/', providerController.toggleProviderController);
+router.post('/', validateCreateProvider, providerController.createProviderController);
+router.put('/', validateUpdateProvider, providerController.updateProviderController);
+router.delete('/', validateDeleteProvider, providerController.deleteProviderController);
+// router.delete('/', providerController.toggleProviderController);
 
 module.exports = router;
 

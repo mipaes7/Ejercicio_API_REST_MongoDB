@@ -1,5 +1,6 @@
 const { response } = require('express');
 const productService = require('../services/products.services');
+const {validationResult} = require("express-validator");
 
 const getProducts = async (req, res) => {
     let products;
@@ -12,8 +13,13 @@ const getProducts = async (req, res) => {
 };
 
 const createProductController = async (req, res) => {
+
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
     const { title, price, description, image, company_name } = req.body;
-    if (title && price && description && image && company_name) {
         try {
             const response = await productService.createProduct(title, price, description, image, company_name);
             res.status(201).json({
@@ -23,12 +29,15 @@ const createProductController = async (req, res) => {
         } catch (error) {
             res.status(500).json({ mensaje: error.message });
         }
-    } else {
-        res.status(400).json({ error: "Faltan campos de product" });
-    }
 };
 
 const updateProductController = async (req, res) => {
+
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
     filter = req.query;
     update = req.body;
         try {
@@ -42,6 +51,12 @@ const updateProductController = async (req, res) => {
 // deleteProduct
 // DELETE http://localhost:3000/api/products?title=title.valor
 const deleteProductController = async (req, res) => {
+
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
     let products;
     try {
         products = await productService.deleteProduct(req.query.title);
